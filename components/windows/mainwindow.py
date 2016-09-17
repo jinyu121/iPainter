@@ -212,7 +212,7 @@ class MainWindow(class_basic_class, class_ui):
         self.show_picture(self.raw_data)
 
     def do_switch_tool(self, tool_name):
-        tool_full_name = "algorithms.tool_{}.Tool{}".format(tool_name.lower(), tool_name.capitalize())
+        tool_full_name = "tools.tool_{}.Tool{}".format(tool_name.lower(), tool_name.capitalize())
         self.tool_now = reflect_get_class(tool_full_name)
         self.statusBar.showMessage('切换到工具：{}'.format(self.tool_now.tool_name))
 

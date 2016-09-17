@@ -2,15 +2,15 @@
 
 import numpy as np
 from .base_tool import BaseTool
-from .algorithm_bresenham import Bresenham
+from algorithms.algorithm_bresenham import Bresenham
 
 
-class ToolLine(BaseTool):
-    is_keep = False
-    tool_name = "直线"
+class ToolEraser(BaseTool):
+    is_keep = True
+    tool_name = "橡皮"
 
     def __init__(self):
-        super(ToolLine, self).__init__()
+        super(ToolEraser, self).__init__()
 
     @classmethod
     def draw(cls, image, environment):
@@ -23,13 +23,13 @@ class ToolLine(BaseTool):
                 :return:
                     numpy 3d-array
                 """
-        y0 = environment.point_start.x()
-        x0 = environment.point_start.y()
+        y0 = environment.point_old.x()
+        x0 = environment.point_old.y()
         y1 = environment.point_now.x()
         x1 = environment.point_now.y()
-        color = [environment.foreground_color.red(),
-                 environment.foreground_color.green(),
-                 environment.foreground_color.blue()]
+        color = [environment.background_color.red(),
+                 environment.background_color.green(),
+                 environment.background_color.blue()]
 
         return Bresenham.draw_line(np.array(image),
                                    x0=x0, y0=y0,

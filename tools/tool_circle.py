@@ -2,7 +2,7 @@
 
 import numpy as np
 from .base_tool import BaseTool
-from .algorithm_bresenham import Bresenham
+from algorithms.algorithm_bresenham import Bresenham
 
 
 class ToolCircle(BaseTool):

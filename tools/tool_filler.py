@@ -2,7 +2,7 @@
 
 import numpy as np
 from .base_tool import BaseTool
-from .algorithm_floodfill import FloodFill
+from algorithms.algorithm_floodfill import FloodFill
 
 
 class ToolFiller(BaseTool):
