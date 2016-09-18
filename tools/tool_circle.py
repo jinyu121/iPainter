@@ -16,8 +16,8 @@ class ToolCircle(BaseTool):
     def draw(cls, image, environment):
         yc = environment.point_start.x()
         xc = environment.point_start.y()
-        b = environment.point_now.x() - environment.point_start.x()
-        a = environment.point_now.y() - environment.point_start.y()
+        b = np.abs(environment.point_now.x() - environment.point_start.x())
+        a = np.abs(environment.point_now.y() - environment.point_start.y())
         color = [environment.foreground_color.red(),
                  environment.foreground_color.green(),
                  environment.foreground_color.blue()]
