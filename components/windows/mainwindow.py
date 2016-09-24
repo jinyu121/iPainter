@@ -172,7 +172,12 @@ class MainWindow(class_basic_class, class_ui):
                 QMessageBox.warning(self, 'Error', "图片不支持", QMessageBox.Yes)
 
     def do_filter(self, filter_name):
-        pass
+        "使用滤镜"
+        self.confitm_action()
+        filter_full_name = "filters.filter_{}.Filter{}".format(filter_name.lower(), filter_name.capitalize())
+        filter_now = reflect_get_class(filter_full_name)
+        self.raw_data = filter_now.render(self.raw_data, self)
+        self.show_picture()
 
     def do_file__save_picture(self):
         "保存文件"
