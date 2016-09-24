@@ -263,8 +263,8 @@
     <addaction name="action__action_redo"/>
    </widget>
    <addaction name="menu_file"/>
-   <addaction name="menu_filter"/>
    <addaction name="menu"/>
+   <addaction name="menu_filter"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action__file_open">
