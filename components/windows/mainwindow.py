@@ -38,7 +38,6 @@ class MainWindow(class_basic_class, class_ui):
         self.paper.setMouseTracking(True)
         self.raw_data = None
         self.raw_data_tmp = None
-        self.stroke_width = 1
         self.background_color = QColor(255, 255, 255)
         self.foreground_color = QColor(0, 0, 0)
         self.point_start = None
@@ -75,7 +74,6 @@ class MainWindow(class_basic_class, class_ui):
         self.btn_tool_filler.clicked.connect(lambda: self.do_switch_tool('filler'))
         self.btn_tool_text.clicked.connect(lambda: self.do_switch_tool('text'))
         # widgets
-        self.slider_stroke_width_select.valueChanged.connect(self.do_change_stroke_width)
         self.paper.installEventFilter(self)
 
     def __init_components(self):
@@ -211,10 +209,6 @@ class MainWindow(class_basic_class, class_ui):
     # Tool box
     # ========== ========== ==========
 
-
-    def do_change_stroke_width(self):
-        self.stroke_width = self.slider_stroke_width_select.value()
-        self.statusBar.showMessage('画笔宽度：{}'.format(self.stroke_width))
 
     def do_tool_moving(self):
         self.raw_data_tmp = self.tool_now.draw(self.raw_data, self)
