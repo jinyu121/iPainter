@@ -60,9 +60,12 @@ class MainWindow(class_basic_class, class_ui):
         self.action__file_quit.triggered.connect(lambda: self.close())
         self.action__action_undo.triggered.connect(self.do_action__undo)
         self.action__action_redo.triggered.connect(self.do_action__redo)
+        self.action__filter_blur.triggered.connect(lambda: self.do_filter('blur'))
         # buttons
-        self.label_color_foreground_show.clicked.connect(self.do_change_foreground_color)
-        self.label_color_background_show.clicked.connect(self.do_change_background_color)
+        self.label_color_foreground_show.clicked.connect(
+            lambda: self.set_foreground_color(QColorDialog.getColor(self.foreground_color)))
+        self.label_color_background_show.clicked.connect(
+            lambda: self.set_background_color(QColorDialog.getColor(self.background_color)))
         self.btn_tool_pencil.clicked.connect(lambda: self.do_switch_tool('pencil'))
         self.btn_tool_eraser.clicked.connect(lambda: self.do_switch_tool('eraser'))
         self.btn_tool_line.clicked.connect(lambda: self.do_switch_tool('line'))
@@ -117,11 +120,7 @@ class MainWindow(class_basic_class, class_ui):
             self.point_start = event.pos()
             self.point_now = event.pos()
             self.point_old = event.pos()
-            # 把当前图片压入重做栈中
-            self.action_stack_undo.append(self.raw_data)
-            if len(self.action_stack_undo) > self.UNDO_MAX_STEP:
-                self.action_stack_undo.pop(0)
-            self.action_stack_redo = list()
+            self.confitm_action()
         elif event.type() == QEvent.MouseButtonRelease:
             # 鼠标放开，确认绘图
             self.point_now = event.pos()
@@ -172,6 +171,9 @@ class MainWindow(class_basic_class, class_ui):
                 logging.error(str(e))
                 QMessageBox.warning(self, 'Error', "图片不支持", QMessageBox.Yes)
 
+    def do_filter(self, filter_name):
+        pass
+
     def do_file__save_picture(self):
         "保存文件"
         if self.raw_data is None:
@@ -204,22 +206,12 @@ class MainWindow(class_basic_class, class_ui):
     # Tool box
     # ========== ========== ==========
 
-    def do_change_background_color(self):
-        color = QColorDialog.getColor(self.background_color)
-        self.set_background_color(color)
-
-    def do_change_foreground_color(self):
-        color = QColorDialog.getColor(self.foreground_color)
-        self.set_foreground_color(color)
 
     def do_change_stroke_width(self):
         self.stroke_width = self.slider_stroke_width_select.value()
         self.statusBar.showMessage('画笔宽度：{}'.format(self.stroke_width))
 
     def do_tool_moving(self):
-        # print("Moving: ({},{}) -> ({},{})".format(
-        #     self.point_start.x(), self.point_start.y(), self.point_now.x(), self.point_now.y())
-        # )
         self.raw_data_tmp = self.tool_now.draw(self.raw_data, self)
         if self.tool_now.is_keep:
             self.raw_data = self.raw_data_tmp
@@ -231,6 +223,7 @@ class MainWindow(class_basic_class, class_ui):
         self.show_picture(self.raw_data)
 
     def do_switch_tool(self, tool_name):
+        "切换工具"
         tool_full_name = "tools.tool_{}.Tool{}".format(tool_name.lower(), tool_name.capitalize())
         self.tool_now = reflect_get_class(tool_full_name)
         self.statusBar.showMessage('切换到工具：{}'.format(self.tool_now.tool_name))
@@ -256,8 +249,16 @@ class MainWindow(class_basic_class, class_ui):
             logging.error("Color is not valid")
 
     def show_picture(self, picture=None):
+        "显示图像"
         if picture is None:
             picture = self.raw_data
         self.paper.setFixedWidth(picture.shape[1])
         self.paper.setFixedHeight(picture.shape[0])
         self.paper.setPixmap(numpy_image_2_qt_image(picture))
+
+    def confitm_action(self):
+        "当前显示图像压栈"
+        self.action_stack_undo.append(self.raw_data)
+        if len(self.action_stack_undo) > self.UNDO_MAX_STEP:
+            self.action_stack_undo.pop(0)
+        self.action_stack_redo = list()

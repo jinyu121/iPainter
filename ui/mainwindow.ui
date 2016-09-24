@@ -252,8 +252,8 @@
     <property name="title">
      <string>效果</string>
     </property>
-    <addaction name="action_filter_blur"/>
-    <addaction name="action_filter_sharpen"/>
+    <addaction name="action__filter_blur"/>
+    <addaction name="action__filter_sharpen"/>
    </widget>
    <widget class="QMenu" name="menu">
     <property name="title">
@@ -282,12 +282,12 @@
     <string>退出</string>
    </property>
   </action>
-  <action name="action_filter_blur">
+  <action name="action__filter_blur">
    <property name="text">
     <string>模糊</string>
    </property>
   </action>
-  <action name="action_filter_sharpen">
+  <action name="action__filter_sharpen">
    <property name="text">
     <string>锐化</string>
    </property>
