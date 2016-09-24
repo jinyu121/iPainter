@@ -34,9 +34,9 @@ class ToolPencil(BaseTool):
         y0 = environment.point_old.x()
         x0 = environment.point_old.y()
 
-        color = [environment.foreground_color.red(),
-                 environment.foreground_color.green(),
-                 environment.foreground_color.blue()]
+        color = [environment.foreground_color.red() / 255,
+                 environment.foreground_color.green() / 255,
+                 environment.foreground_color.blue() / 255]
 
         return Bresenham.draw_line(np.array(image),
                                    x0=x0, y0=y0,

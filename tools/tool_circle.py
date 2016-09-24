@@ -18,9 +18,9 @@ class ToolCircle(BaseTool):
         xc = environment.point_start.y()
         b = np.abs(environment.point_now.x() - environment.point_start.x())
         a = np.abs(environment.point_now.y() - environment.point_start.y())
-        color = [environment.foreground_color.red(),
-                 environment.foreground_color.green(),
-                 environment.foreground_color.blue()]
+        color = [environment.foreground_color.red() / 255,
+                 environment.foreground_color.green() / 255,
+                 environment.foreground_color.blue() / 255]
 
         return Bresenham.draw_ellipse(np.array(image),
                                       xc=xc, yc=yc,

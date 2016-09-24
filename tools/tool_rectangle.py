@@ -31,9 +31,9 @@ class ToolRectangle(BaseTool):
         max_x = environment.paper.height()
         max_y = environment.paper.width()
 
-        color = [environment.foreground_color.red(),
-                 environment.foreground_color.green(),
-                 environment.foreground_color.blue()]
+        color = [environment.foreground_color.red() / 255,
+                 environment.foreground_color.green() / 255,
+                 environment.foreground_color.blue() / 255]
         image = np.array(image)
 
         image = Bresenham.draw_line(image, x0=x0, y0=y0, x1=x0, y1=y1,

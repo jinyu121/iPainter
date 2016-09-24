@@ -27,9 +27,9 @@ class ToolEraser(BaseTool):
         x0 = environment.point_old.y()
         y1 = environment.point_now.x()
         x1 = environment.point_now.y()
-        color = [environment.background_color.red(),
-                 environment.background_color.green(),
-                 environment.background_color.blue()]
+        color = [environment.background_color.red() / 255,
+                 environment.background_color.green() / 255,
+                 environment.background_color.blue() / 255]
 
         return Bresenham.draw_line(np.array(image),
                                    x0=x0, y0=y0,

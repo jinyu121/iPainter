@@ -14,9 +14,9 @@ class ToolFiller(BaseTool):
 
     @classmethod
     def draw(cls, image, environment):
-        color = [environment.foreground_color.red(),
-                 environment.foreground_color.green(),
-                 environment.foreground_color.blue()]
+        color = [environment.foreground_color.red() / 255,
+                 environment.foreground_color.green() / 255,
+                 environment.foreground_color.blue() / 255]
         return FloodFill.fill(np.array(image),
                               x=environment.point_now.y(),
                               y=environment.point_now.x(),

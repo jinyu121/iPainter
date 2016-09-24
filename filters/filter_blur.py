@@ -15,5 +15,4 @@ class FilterBlur(BaseFilter):
     def render(cls, image, environment):
         image = skimage.img_as_float(image)
         image = skimage.filters.gaussian(image, 0.8, multichannel=False)
-        image = skimage.img_as_ubyte(image)
         return image

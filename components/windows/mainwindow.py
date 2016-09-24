@@ -146,8 +146,8 @@ class MainWindow(class_basic_class, class_ui):
 
     def do_file__new(self):
         "新建文件"
-        self.raw_data = np.ndarray((400, 500, 3), dtype=np.uint8)
-        self.raw_data.fill(255)
+        self.raw_data = np.ndarray((400, 500, 3), dtype=np.float)
+        self.raw_data.fill(1)
         self.show_picture()
 
     def do_file__open_picture(self):
@@ -157,7 +157,7 @@ class MainWindow(class_basic_class, class_ui):
             logging.info("Selected file: {}".format(file_name))
             try:
                 self.statusBar.showMessage('图片加载中')
-                self.raw_data = skimage.img_as_ubyte(skimage.io.imread(file_name))
+                self.raw_data = skimage.img_as_float(skimage.io.imread(file_name))
                 logging.info("Read file: {}".format(file_name))
                 if 4 == self.raw_data.shape[2]:
                     self.raw_data = skimage.color.rgba2rgb(self.raw_data)
@@ -259,7 +259,7 @@ class MainWindow(class_basic_class, class_ui):
             picture = self.raw_data
         self.paper.setFixedWidth(picture.shape[1])
         self.paper.setFixedHeight(picture.shape[0])
-        self.paper.setPixmap(numpy_image_2_qt_image(picture))
+        self.paper.setPixmap(numpy_image_2_qt_image(skimage.img_as_ubyte(picture)))
 
     def confitm_action(self):
         "当前显示图像压栈"
