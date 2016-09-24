@@ -120,7 +120,7 @@ class MainWindow(class_basic_class, class_ui):
             # 把当前图片压入重做栈中
             self.action_stack_undo.append(self.raw_data)
             if len(self.action_stack_undo) > self.UNDO_MAX_STEP:
-                self.action_stack_undo.remove(0)
+                self.action_stack_undo.pop(0)
             self.action_stack_redo = list()
         elif event.type() == QEvent.MouseButtonRelease:
             # 鼠标放开，确认绘图
