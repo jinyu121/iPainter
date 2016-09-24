@@ -242,9 +242,9 @@
     <property name="title">
      <string>文件</string>
     </property>
-    <addaction name="action_file_new"/>
-    <addaction name="action_file_open"/>
-    <addaction name="action_file_save"/>
+    <addaction name="action__file_new"/>
+    <addaction name="action__file_open"/>
+    <addaction name="action__file_save"/>
     <addaction name="separator"/>
     <addaction name="action__file_quit"/>
    </widget>
@@ -253,18 +253,26 @@
      <string>效果</string>
     </property>
     <addaction name="action_filter_blur"/>
-    <addaction name="action_sharpen"/>
+    <addaction name="action_filter_sharpen"/>
+   </widget>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>动作</string>
+    </property>
+    <addaction name="action__action_undo"/>
+    <addaction name="action__action_redo"/>
    </widget>
    <addaction name="menu_file"/>
    <addaction name="menu_filter"/>
+   <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="action_file_open">
+  <action name="action__file_open">
    <property name="text">
     <string>打开</string>
    </property>
   </action>
-  <action name="action_file_save">
+  <action name="action__file_save">
    <property name="text">
     <string>保存</string>
    </property>
@@ -279,14 +287,24 @@
     <string>模糊</string>
    </property>
   </action>
-  <action name="action_sharpen">
+  <action name="action_filter_sharpen">
    <property name="text">
     <string>锐化</string>
    </property>
   </action>
-  <action name="action_file_new">
+  <action name="action__file_new">
    <property name="text">
     <string>新建</string>
+   </property>
+  </action>
+  <action name="action__action_undo">
+   <property name="text">
+    <string>撤销</string>
+   </property>
+  </action>
+  <action name="action__action_redo">
+   <property name="text">
+    <string>重做</string>
    </property>
   </action>
  </widget>

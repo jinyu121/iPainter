@@ -32,29 +32,34 @@ class MainWindow(class_basic_class, class_ui):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setupUi(self)
-        self.__init_parameters()
-        self.__init_connections()
-        self.__init_components()
-
-    def __init_parameters(self):
-        self.pen = QPainter()
+        # 常量
+        self.UNDO_MAX_STEP = 30
+        # 初始化参数
+        self.paper.setMouseTracking(True)
         self.raw_data = None
         self.raw_data_tmp = None
         self.stroke_width = 1
         self.background_color = QColor(255, 255, 255)
         self.foreground_color = QColor(0, 0, 0)
-        self.paper.setMouseTracking(True)
         self.point_start = None
         self.point_old = None
         self.point_now = None
         self.tool_now = None
+        self.action_stack_undo = list()
+        self.action_stack_redo = list()
+        # 初始化信号槽
+        self.__init_connections()
+        # 初始化显示
+        self.__init_components()
 
     def __init_connections(self):
         # menu
-        self.action_file_open.triggered.connect(self.do_file__open_picture)
-        self.action_file_new.triggered.connect(self.do_file__new)
-        self.action_file_save.triggered.connect(self.do_file__save_picture)
-        self.action__file_quit.triggered.connect(self.do_file__quit)
+        self.action__file_open.triggered.connect(self.do_file__open_picture)
+        self.action__file_new.triggered.connect(self.do_file__new)
+        self.action__file_save.triggered.connect(self.do_file__save_picture)
+        self.action__file_quit.triggered.connect(lambda: self.close())
+        self.action__action_undo.triggered.connect(self.do_action__undo)
+        self.action__action_redo.triggered.connect(self.do_action__redo)
         # buttons
         self.label_color_foreground_show.clicked.connect(self.do_change_foreground_color)
         self.label_color_background_show.clicked.connect(self.do_change_background_color)
@@ -112,6 +117,11 @@ class MainWindow(class_basic_class, class_ui):
             self.point_start = event.pos()
             self.point_now = event.pos()
             self.point_old = event.pos()
+            # 把当前图片压入重做栈中
+            self.action_stack_undo.append(self.raw_data)
+            if len(self.action_stack_undo) > self.UNDO_MAX_STEP:
+                self.action_stack_undo.remove(0)
+            self.action_stack_redo = list()
         elif event.type() == QEvent.MouseButtonRelease:
             # 鼠标放开，确认绘图
             self.point_now = event.pos()
@@ -136,11 +146,13 @@ class MainWindow(class_basic_class, class_ui):
     # ========== ========== ==========
 
     def do_file__new(self):
+        "新建文件"
         self.raw_data = np.ndarray((400, 500, 3), dtype=np.uint8)
         self.raw_data.fill(255)
-        self.show_picture(self.raw_data)
+        self.show_picture()
 
     def do_file__open_picture(self):
+        "打开文件"
         file_name, btn = QFileDialog.getOpenFileName(self, 'Open file')
         if file_name:
             logging.info("Selected file: {}".format(file_name))
@@ -161,6 +173,7 @@ class MainWindow(class_basic_class, class_ui):
                 QMessageBox.warning(self, 'Error', "图片不支持", QMessageBox.Yes)
 
     def do_file__save_picture(self):
+        "保存文件"
         if self.raw_data is None:
             QMessageBox.warning(self, 'Error', "没有图片可供保存", QMessageBox.Yes)
         else:
@@ -173,11 +186,19 @@ class MainWindow(class_basic_class, class_ui):
                     QMessageBox.warning(self, 'Error', "图片保存失败", QMessageBox.Yes)
                     logging.error(str(e))
 
-    def do_file__quit(self):
-        self.close()
+    def do_action__undo(self):
+        "“撤销”动作"
+        if len(self.action_stack_undo) > 0:
+            self.action_stack_redo.append(self.raw_data)
+            self.raw_data = self.action_stack_undo.pop()
+            self.show_picture()
 
-    def do_effect__blur(self):
-        pass
+    def do_action__redo(self):
+        "“重做”动作"
+        if len(self.action_stack_redo) > 0:
+            self.action_stack_undo.append(self.raw_data)
+            self.raw_data = self.action_stack_redo.pop()
+            self.show_picture()
 
     # ========== ========== ==========
     # Tool box
@@ -205,9 +226,7 @@ class MainWindow(class_basic_class, class_ui):
         self.show_picture(self.raw_data_tmp)
 
     def do_tool(self):
-        # print("Confirm: ({},{}) -> ({},{})".format(
-        #     self.point_start.x(), self.point_start.y(), self.point_now.x(), self.point_now.y())
-        # )
+        "鼠标松开，确认绘图。"
         self.raw_data = self.tool_now.draw(self.raw_data, self)
         self.show_picture(self.raw_data)
 
@@ -236,7 +255,9 @@ class MainWindow(class_basic_class, class_ui):
         else:
             logging.error("Color is not valid")
 
-    def show_picture(self, picture):
+    def show_picture(self, picture=None):
+        if picture is None:
+            picture = self.raw_data
         self.paper.setFixedWidth(picture.shape[1])
         self.paper.setFixedHeight(picture.shape[0])
         self.paper.setPixmap(numpy_image_2_qt_image(picture))
