@@ -261,6 +261,11 @@
     </property>
     <addaction name="action__action_undo"/>
     <addaction name="action__action_redo"/>
+    <addaction name="separator"/>
+    <addaction name="action__action_change_image_shape"/>
+    <addaction name="action__action_image_rescaling"/>
+    <addaction name="separator"/>
+    <addaction name="action__action_rotate"/>
    </widget>
    <addaction name="menu_file"/>
    <addaction name="menu"/>
@@ -305,6 +310,21 @@
   <action name="action__action_redo">
    <property name="text">
     <string>重做</string>
+   </property>
+  </action>
+  <action name="action__action_change_image_shape">
+   <property name="text">
+    <string>画布缩放</string>
+   </property>
+  </action>
+  <action name="action__action_image_rescaling">
+   <property name="text">
+    <string>图像缩放</string>
+   </property>
+  </action>
+  <action name="action__action_rotate">
+   <property name="text">
+    <string>旋转</string>
    </property>
   </action>
  </widget>

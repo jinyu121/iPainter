@@ -7,6 +7,7 @@ from PyQt5.QtGui import QPainter
 from PyQt5.QtCore import QEvent
 from PyQt5.QtWidgets import QColorDialog
 from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QInputDialog
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QWidget
@@ -15,6 +16,7 @@ import skimage.io
 import skimage.color
 import numpy as np
 from common.utils import numpy_image_2_qt_image
+import skimage.transform
 from PyQt5.QtWidgets import QSizePolicy
 
 # Define the .ui file, and load it.
@@ -59,6 +61,7 @@ class MainWindow(class_basic_class, class_ui):
         self.action__file_quit.triggered.connect(lambda: self.close())
         self.action__action_undo.triggered.connect(self.do_action__undo)
         self.action__action_redo.triggered.connect(self.do_action__redo)
+        self.action__action_change_image_shape.triggered.connect(self.do_action__change_image_shape)
         self.action__filter_blur.triggered.connect(lambda: self.do_filter('blur'))
         # buttons
         self.label_color_foreground_show.clicked.connect(
@@ -168,6 +171,21 @@ class MainWindow(class_basic_class, class_ui):
             except Exception as e:
                 logging.error(str(e))
                 QMessageBox.warning(self, 'Error', "图片不支持", QMessageBox.Yes)
+
+    def do_action__change_image_shape(self):
+        "画布缩放"
+        # 获取输入
+        shape_h, shape_w = self.raw_data.shape[:2]
+        shape_w, ok = QInputDialog.getInt(self, 'Input Dialog', 'Enter new width:', shape_w)
+        if not ok:
+            return
+        shape_h, ok = QInputDialog.getInt(self, 'Input Dialog', 'Enter new height:', shape_h)
+        if not ok:
+            return
+        # 开始做
+        self.confitm_action()
+        self.raw_data = skimage.transform.resize(self.raw_data, (shape_h, shape_w))
+        self.show_picture()
 
     def do_filter(self, filter_name):
         "使用滤镜"
