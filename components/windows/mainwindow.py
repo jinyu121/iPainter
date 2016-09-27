@@ -61,7 +61,8 @@ class MainWindow(class_basic_class, class_ui):
         self.action__file_quit.triggered.connect(lambda: self.close())
         self.action__action_undo.triggered.connect(self.do_action__undo)
         self.action__action_redo.triggered.connect(self.do_action__redo)
-        self.action__action_change_image_shape.triggered.connect(self.do_action__change_image_shape)
+        self.action__action_change_image_shape.triggered.connect(self.do_action__image_rescaling)
+        self.action__action_image_rescaling.triggered.connect(self.do_action__change_image_shape)
         self.action__filter_blur.triggered.connect(lambda: self.do_filter('blur'))
         # buttons
         self.label_color_foreground_show.clicked.connect(
@@ -173,7 +174,7 @@ class MainWindow(class_basic_class, class_ui):
                 QMessageBox.warning(self, 'Error', "图片不支持", QMessageBox.Yes)
 
     def do_action__change_image_shape(self):
-        "画布缩放"
+        "图像缩放"
         # 获取输入
         shape_h, shape_w = self.raw_data.shape[:2]
         shape_w, ok = QInputDialog.getInt(self, 'Input Dialog', 'Enter new width:', shape_w)
@@ -185,6 +186,27 @@ class MainWindow(class_basic_class, class_ui):
         # 开始做
         self.confitm_action()
         self.raw_data = skimage.transform.resize(self.raw_data, (shape_h, shape_w))
+        self.show_picture()
+
+    def do_action__image_rescaling(self):
+        "画布缩放"
+        # 获取输入
+        shape_h, shape_w = self.raw_data.shape[:2]
+        shape_w, ok = QInputDialog.getInt(self, 'Input Dialog', 'Enter new width:', shape_w)
+        if not ok:
+            return
+        shape_h, ok = QInputDialog.getInt(self, 'Input Dialog', 'Enter new height:', shape_h)
+        if not ok:
+            return
+        # 开始做
+        tmp = np.zeros((shape_h, shape_w, self.raw_data.shape[2]), dtype=np.double)
+        tmp[:, :, 0].fill(self.background_color.redF())
+        tmp[:, :, 1].fill(self.background_color.greenF())
+        tmp[:, :, 2].fill(self.background_color.blueF())
+        true_shape_h = min(shape_h, self.raw_data.shape[0])
+        true_shape_w = min(shape_w, self.raw_data.shape[1])
+        tmp[:true_shape_h, :true_shape_w, :] = self.raw_data[:true_shape_h, :true_shape_w, :]
+        self.raw_data = tmp
         self.show_picture()
 
     def do_filter(self, filter_name):
