@@ -3,6 +3,7 @@
 import numpy as np
 from .base_tool import BaseTool
 from algorithms.algorithm_bresenham import Bresenham
+from common.utils import q_color_ro_rgb
 
 
 class ToolCircle(BaseTool):
@@ -18,9 +19,7 @@ class ToolCircle(BaseTool):
         xc = environment.point_start.y()
         b = np.abs(environment.point_now.x() - environment.point_start.x())
         a = np.abs(environment.point_now.y() - environment.point_start.y())
-        color = [environment.foreground_color.red() / 255,
-                 environment.foreground_color.green() / 255,
-                 environment.foreground_color.blue() / 255]
+        color = q_color_ro_rgb(environment.foreground_color)
 
         return Bresenham.draw_ellipse(np.array(image),
                                       xc=xc, yc=yc,

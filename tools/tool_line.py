@@ -3,6 +3,7 @@
 import numpy as np
 from .base_tool import BaseTool
 from algorithms.algorithm_bresenham import Bresenham
+from common.utils import q_color_ro_rgb
 
 
 class ToolLine(BaseTool):
@@ -27,9 +28,7 @@ class ToolLine(BaseTool):
         x0 = environment.point_start.y()
         y1 = environment.point_now.x()
         x1 = environment.point_now.y()
-        color = [environment.foreground_color.red() / 255,
-                 environment.foreground_color.green() / 255,
-                 environment.foreground_color.blue() / 255]
+        color = q_color_ro_rgb(environment.foreground_color)
 
         return Bresenham.draw_line(np.array(image),
                                    x0=x0, y0=y0,

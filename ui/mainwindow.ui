@@ -264,6 +264,7 @@
     <addaction name="separator"/>
     <addaction name="action__action_change_image_shape"/>
     <addaction name="action__action_image_rescaling"/>
+    <addaction name="action__action_seam_carving"/>
     <addaction name="separator"/>
     <addaction name="action__action_rotate"/>
    </widget>
@@ -325,6 +326,11 @@
   <action name="action__action_rotate">
    <property name="text">
     <string>旋转</string>
+   </property>
+  </action>
+  <action name="action__action_seam_carving">
+   <property name="text">
+    <string>内容识别比例</string>
    </property>
   </action>
  </widget>

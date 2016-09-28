@@ -3,6 +3,7 @@
 import numpy as np
 from .base_tool import BaseTool
 from algorithms.algorithm_floodfill import FloodFill
+from common.utils import q_color_ro_rgb
 
 
 class ToolFiller(BaseTool):
@@ -14,9 +15,7 @@ class ToolFiller(BaseTool):
 
     @classmethod
     def draw(cls, image, environment):
-        color = [environment.foreground_color.red() / 255,
-                 environment.foreground_color.green() / 255,
-                 environment.foreground_color.blue() / 255]
+        color = q_color_ro_rgb(environment.foreground_color)
         return FloodFill.fill(np.array(image),
                               x=environment.point_now.y(),
                               y=environment.point_now.x(),

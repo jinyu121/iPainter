@@ -6,6 +6,7 @@ from functools import reduce
 from PyQt5.QtGui import QPainter
 from PyQt5.QtGui import QImage
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QInputDialog
 
 
 def load_ui(file_path):
@@ -45,3 +46,26 @@ def reflect_get_class(class_full_name):
     for comp in parts[1:]:
         m = getattr(m, comp)
     return m
+
+
+def q_color_ro_rgb(qt_color, is_float=True):
+    if is_float:
+        ans = [qt_color.redF(), qt_color.greenF(), qt_color.blueF()]
+    else:
+        ans = [qt_color.red(), qt_color.green(), qt_color.blue()]
+    return ans
+
+
+def input_width_and_height(environment, now_height, now_width):
+    shape_w_h_text = ['height', 'width']
+    shape_w_h = [now_height, now_width, ]
+    ok = True
+    for ith in range(len(shape_w_h_text)):
+        t, ok = QInputDialog.getInt(environment,
+                                    'Input Dialog', 'Enter new {}:'.format(shape_w_h_text[ith]),
+                                    shape_w_h[ith])
+        if ok:
+            shape_w_h[ith] = t
+        else:
+            break
+    return shape_w_h[0], shape_w_h[1], ok

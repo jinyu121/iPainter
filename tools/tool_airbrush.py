@@ -2,6 +2,7 @@
 
 import numpy as np
 from .base_tool import BaseTool
+from common.utils import q_color_ro_rgb
 
 
 class ToolAirbrush(BaseTool):
@@ -14,9 +15,7 @@ class ToolAirbrush(BaseTool):
     @classmethod
     def draw(cls, image, environment):
         image = np.array(image)
-        color = [environment.foreground_color.red() / 255,
-                 environment.foreground_color.green() / 255,
-                 environment.foreground_color.blue() / 255]
+        color = q_color_ro_rgb(environment.foreground_color)
 
         a = environment.point_now.y()
         b = environment.point_now.x()

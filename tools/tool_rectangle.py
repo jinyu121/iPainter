@@ -3,6 +3,7 @@
 import numpy as np
 from .base_tool import BaseTool
 from algorithms.algorithm_bresenham import Bresenham
+from common.utils import q_color_ro_rgb
 
 
 class ToolRectangle(BaseTool):
@@ -31,9 +32,8 @@ class ToolRectangle(BaseTool):
         max_x = environment.paper.height()
         max_y = environment.paper.width()
 
-        color = [environment.foreground_color.red() / 255,
-                 environment.foreground_color.green() / 255,
-                 environment.foreground_color.blue() / 255]
+        color = q_color_ro_rgb(environment.foreground_color)
+
         image = np.array(image)
 
         image = Bresenham.draw_line(image, x0=x0, y0=y0, x1=x0, y1=y1,

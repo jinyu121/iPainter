@@ -3,7 +3,6 @@
 from common.consts import DIRECTORIES
 from common.utils import load_ui
 from common.utils import reflect_get_class
-from PyQt5.QtGui import QPainter
 from PyQt5.QtCore import QEvent
 from PyQt5.QtWidgets import QColorDialog
 from PyQt5.QtWidgets import QFileDialog
@@ -16,8 +15,9 @@ import skimage.io
 import skimage.color
 import numpy as np
 from common.utils import numpy_image_2_qt_image
+from common.utils import input_width_and_height
 import skimage.transform
-from PyQt5.QtWidgets import QSizePolicy
+from algorithms.algotithm_seamcarving import SeamCarving
 
 # Define the .ui file, and load it.
 # We will get the UI class and the base class
@@ -61,8 +61,9 @@ class MainWindow(class_basic_class, class_ui):
         self.action__file_quit.triggered.connect(lambda: self.close())
         self.action__action_undo.triggered.connect(self.do_action__undo)
         self.action__action_redo.triggered.connect(self.do_action__redo)
-        self.action__action_change_image_shape.triggered.connect(self.do_action__image_rescaling)
-        self.action__action_image_rescaling.triggered.connect(self.do_action__change_image_shape)
+        self.action__action_change_image_shape.triggered.connect(self.do_action__change_image_shape)
+        self.action__action_image_rescaling.triggered.connect(self.do_action__image_rescaling)
+        self.action__action_seam_carving.triggered.connect(self.do_action__seam_carving)
         self.action__filter_blur.triggered.connect(lambda: self.do_filter('blur'))
         # buttons
         self.label_color_foreground_show.clicked.connect(
@@ -173,41 +174,49 @@ class MainWindow(class_basic_class, class_ui):
                 logging.error(str(e))
                 QMessageBox.warning(self, 'Error', "图片不支持", QMessageBox.Yes)
 
-    def do_action__change_image_shape(self):
+    def do_action__image_rescaling(self):
         "图像缩放"
         # 获取输入
         shape_h, shape_w = self.raw_data.shape[:2]
-        shape_w, ok = QInputDialog.getInt(self, 'Input Dialog', 'Enter new width:', shape_w)
-        if not ok:
-            return
-        shape_h, ok = QInputDialog.getInt(self, 'Input Dialog', 'Enter new height:', shape_h)
-        if not ok:
-            return
-        # 开始做
-        self.confitm_action()
-        self.raw_data = skimage.transform.resize(self.raw_data, (shape_h, shape_w))
-        self.show_picture()
+        shape_h, shape_w, ok = input_width_and_height(self, shape_h, shape_w)
+        if ok:
+            # 开始做
+            tmp = skimage.transform.resize(self.raw_data, (shape_h, shape_w))
+            self.raw_data[:, :, 0].fill(self.background_color.redF())
+            self.raw_data[:, :, 1].fill(self.background_color.greenF())
+            self.raw_data[:, :, 2].fill(self.background_color.blueF())
+            true_shape_h = min(shape_h, self.raw_data.shape[0])
+            true_shape_w = min(shape_w, self.raw_data.shape[1])
+            self.raw_data[:true_shape_h, :true_shape_w, :] = tmp[:true_shape_h, :true_shape_w, :]
+            self.show_picture()
 
-    def do_action__image_rescaling(self):
+    def do_action__change_image_shape(self):
         "画布缩放"
         # 获取输入
         shape_h, shape_w = self.raw_data.shape[:2]
-        shape_w, ok = QInputDialog.getInt(self, 'Input Dialog', 'Enter new width:', shape_w)
-        if not ok:
-            return
-        shape_h, ok = QInputDialog.getInt(self, 'Input Dialog', 'Enter new height:', shape_h)
-        if not ok:
-            return
-        # 开始做
-        tmp = np.zeros((shape_h, shape_w, self.raw_data.shape[2]), dtype=np.double)
-        tmp[:, :, 0].fill(self.background_color.redF())
-        tmp[:, :, 1].fill(self.background_color.greenF())
-        tmp[:, :, 2].fill(self.background_color.blueF())
-        true_shape_h = min(shape_h, self.raw_data.shape[0])
-        true_shape_w = min(shape_w, self.raw_data.shape[1])
-        tmp[:true_shape_h, :true_shape_w, :] = self.raw_data[:true_shape_h, :true_shape_w, :]
-        self.raw_data = tmp
-        self.show_picture()
+        shape_h, shape_w, ok = input_width_and_height(self, shape_h, shape_w)
+        if ok:
+            # 开始做
+            tmp = np.zeros((shape_h, shape_w, self.raw_data.shape[2]), dtype=np.double)
+            tmp[:, :, 0].fill(self.background_color.redF())
+            tmp[:, :, 1].fill(self.background_color.greenF())
+            tmp[:, :, 2].fill(self.background_color.blueF())
+            true_shape_h = min(shape_h, self.raw_data.shape[0])
+            true_shape_w = min(shape_w, self.raw_data.shape[1])
+            tmp[:true_shape_h, :true_shape_w, :] = self.raw_data[:true_shape_h, :true_shape_w, :]
+            self.raw_data = tmp
+            self.show_picture()
+
+    def do_action__seam_carving(self):
+        "使用 Seam Carving 算法缩放图像"
+        # 获取输入
+        shape_h, shape_w = self.raw_data.shape[:2]
+        shape_h, shape_w, ok = input_width_and_height(self, shape_h, shape_w)
+        if ok:
+            # 开始做
+            self.confitm_action()
+            self.raw_data = SeamCarving.seam_carving(self.raw_data, (shape_h, shape_w))
+            self.show_picture()
 
     def do_filter(self, filter_name):
         "使用滤镜"
