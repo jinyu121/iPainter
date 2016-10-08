@@ -22,11 +22,22 @@ class SeamCarving:
     @classmethod
     def seam_carving(cls, image, new_shape):
         reduce_shape = image.shape[:2] - np.array(new_shape)
-        direction = ['horizontal', 'vertical']
-        for i in range(len(direction)):
-            if reduce_shape[i] > 0:
-                image = skimage.transform.seam_carve(image,
-                                                     cls.__helper_energy_rgb(image),
-                                                     mode=direction[i],
-                                                     num=reduce_shape[i])
+
+        # Removing seams horizontally will decrease the height.
+        if reduce_shape[0] > 0:
+            image = skimage.transform.rotate(image, 90, resize=True)
+            image = skimage.transform.seam_carve(image,
+                                                 cls.__helper_energy_rgb(image),
+                                                 mode='vertical',
+                                                 num=reduce_shape[0])
+            image = skimage.transform.rotate(image, -90, resize=True)
+            if image.shape[0] > new_shape[0]:
+                image = image[:new_shape[0], :, :]
+
+        # Removing seams vertically will decrease the width.
+        if reduce_shape[1] > 0:
+            image = skimage.transform.seam_carve(image,
+                                                 cls.__helper_energy_rgb(image),
+                                                 mode='vertical',
+                                                 num=reduce_shape[1])
         return image
