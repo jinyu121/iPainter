@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-import queue
+import sys
+
+if sys.version_info.major == 3:
+    from queue import Queue
+else:
+    from Queue import Queue
 
 
 class FloodFill:
@@ -18,7 +23,7 @@ class FloodFill:
                               [0, 1, 0, -1]])
         image = np.array(image)
         visited = np.zeros(image.shape[:2], dtype=np.bool)
-        q = queue.Queue()
+        q = Queue()
         q.put((x, y))
         visited[x, y] = True
 
