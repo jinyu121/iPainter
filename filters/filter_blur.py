@@ -14,5 +14,8 @@ class FilterBlur(BaseFilter):
     @classmethod
     def render(cls, image, environment):
         image = skimage.img_as_float(image)
-        image = skimage.filters.gaussian(image, 0.8, multichannel=False)
+        sigma = environment.slider_stroke_width_select.value() / environment.slider_stroke_width_select.maximum()
+        sigma = min(sigma, 0.99)
+        sigma = max(sigma, 0.01)
+        image = skimage.filters.gaussian(image, sigma, multichannel=False)
         return image

@@ -290,7 +290,7 @@
   </action>
   <action name="action__filter_blur">
    <property name="text">
-    <string>模糊</string>
+    <string>高斯模糊</string>
    </property>
   </action>
   <action name="action__filter_sharpen">
