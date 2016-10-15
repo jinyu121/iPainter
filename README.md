@@ -14,6 +14,6 @@ iPainter aiming at imitating Windows Paint application using the knowledge and t
 
 ## Require
 
-+ Python3
++ Python3/Python2
 + PyQt5
 + Scikit-Image
