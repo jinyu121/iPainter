@@ -127,7 +127,7 @@ class SeamCarving:
         # 填充
         if is_decrease:
             image_new[:, :, :] = image_masked_left[:, :-1, :]
-            image_new[:, :, :] -= image_masked_trace[:, :-1, :]
+            # image_new[:, :, :] -= image_masked_trace[:, :-1, :]
             image_new[:, :, :] += image_masked_right[:, :-1, :]
         else:
             image_new[:, :-1, :] = image_masked_left[:, :, :]
