@@ -10,10 +10,12 @@ iPainter aiming at imitating Windows Paint application using the knowledge and t
 
 + Bresenham Line
 + Bresenham Ellipse
-+ Floodfill
++ Flood Fill
++ Seam Carving
 
 ## Require
 
 + Python3/Python2
 + PyQt5
 + Scikit-Image
++ numba
