@@ -5,11 +5,11 @@ from .base_filter import BaseFilter
 import skimage.filters
 
 
-class FilterBlur(BaseFilter):
+class FilterGaussianBlur(BaseFilter):
     filter_name = "模糊效果"
 
     def __init__(self):
-        super(FilterBlur, self).__init__()
+        super(FilterGaussianBlur, self).__init__()
 
     @classmethod
     def render(cls, image, environment):

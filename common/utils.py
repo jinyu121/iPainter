@@ -69,3 +69,19 @@ def input_width_and_height(environment, now_height, now_width):
         else:
             break
     return shape_w_h[0], shape_w_h[1], ok
+
+
+def underline_to_camel(underline_format):
+    camel_format = ''
+    if isinstance(underline_format, str):
+        for _s_ in underline_format.split('_'):
+            camel_format += _s_.capitalize()
+    return camel_format
+
+
+def camel_to_underline(camel_format):
+    underline_format = ''
+    if isinstance(camel_format, str):
+        for _s_ in camel_format:
+            underline_format += _s_ if _s_.islower() else '_' + _s_.lower()
+    return underline_format

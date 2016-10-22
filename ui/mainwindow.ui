@@ -252,8 +252,16 @@
     <property name="title">
      <string>效果</string>
     </property>
+    <widget class="QMenu" name="menu_2">
+     <property name="title">
+      <string>运动模糊去除</string>
+     </property>
+     <addaction name="action__filter_wiener_deblurring"/>
+     <addaction name="action__filter_lucy_richardson_deblur"/>
+    </widget>
     <addaction name="action__filter_blur"/>
     <addaction name="action__filter_sharpen"/>
+    <addaction name="menu_2"/>
    </widget>
    <widget class="QMenu" name="menu">
     <property name="title">
@@ -331,6 +339,21 @@
   <action name="action__action_seam_carving">
    <property name="text">
     <string>内容识别比例</string>
+   </property>
+  </action>
+  <action name="action__filter_deconvolution">
+   <property name="text">
+    <string>运动模糊去除</string>
+   </property>
+  </action>
+  <action name="action__filter_wiener_deblurring">
+   <property name="text">
+    <string>Wiener 滤波</string>
+   </property>
+  </action>
+  <action name="action__filter_lucy_richardson_deblur">
+   <property name="text">
+    <string>Lucy Richardson 反卷积</string>
    </property>
   </action>
  </widget>

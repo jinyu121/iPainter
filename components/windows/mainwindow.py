@@ -16,8 +16,9 @@ import skimage.color
 import numpy as np
 from common.utils import numpy_image_2_qt_image
 from common.utils import input_width_and_height
+from common.utils import (camel_to_underline, underline_to_camel)
 import skimage.transform
-from algorithms.algotithm_seamcarving import SeamCarving
+from algorithms.algorithm_seam_carving import SeamCarving
 
 # Define the .ui file, and load it.
 # We will get the UI class and the base class
@@ -64,7 +65,11 @@ class MainWindow(class_basic_class, class_ui):
         self.action__action_change_image_shape.triggered.connect(self.do_action__change_image_shape)
         self.action__action_image_rescaling.triggered.connect(self.do_action__image_rescaling)
         self.action__action_seam_carving.triggered.connect(self.do_action__seam_carving)
-        self.action__filter_blur.triggered.connect(lambda: self.do_filter('blur'))
+        self.action__filter_blur.triggered.connect(lambda: self.do_filter('gaussian_blur'))
+        self.action__filter_lucy_richardson_deblur.triggered.connect(
+            lambda: self.do_filter('richardson_lucy_deblurring'))
+        self.action__filter_wiener_deblurring.triggered.connect(
+            lambda: self.do_filter('wiener_deblurring'))
         # buttons
         self.label_color_foreground_show.clicked.connect(
             lambda: self.set_foreground_color(QColorDialog.getColor(self.foreground_color)))
@@ -221,7 +226,8 @@ class MainWindow(class_basic_class, class_ui):
     def do_filter(self, filter_name):
         "使用滤镜"
         self.confitm_action()
-        filter_full_name = "filters.filter_{}.Filter{}".format(filter_name.lower(), filter_name.capitalize())
+        filter_full_name = "filters.filter_{}.Filter{}".format(filter_name.lower(),
+                                                               underline_to_camel(filter_name))
         filter_now = reflect_get_class(filter_full_name)
         self.raw_data = filter_now.render(self.raw_data, self)
         self.show_picture()
@@ -272,7 +278,8 @@ class MainWindow(class_basic_class, class_ui):
 
     def do_switch_tool(self, tool_name):
         "切换工具"
-        tool_full_name = "tools.tool_{}.Tool{}".format(tool_name.lower(), tool_name.capitalize())
+        tool_full_name = "tools.tool_{}.Tool{}".format(tool_name.lower(),
+                                                       underline_to_camel(tool_name))
         self.tool_now = reflect_get_class(tool_full_name)
         self.statusBar.showMessage('切换到工具：{}'.format(self.tool_now.tool_name))
 

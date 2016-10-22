@@ -2,7 +2,7 @@
 
 import numpy as np
 from .base_tool import BaseTool
-from algorithms.algorithm_floodfill import FloodFill
+from algorithms.algorithm_flood_fill import FloodFill
 from common.utils import q_color_ro_rgb
 
 
