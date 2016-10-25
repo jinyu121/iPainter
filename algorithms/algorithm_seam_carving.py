@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import skimage.io
 import numpy as np
@@ -7,6 +8,7 @@ import os.path
 import math
 import skimage.draw
 import numba
+import random
 
 
 class SeamCarving:
@@ -16,17 +18,17 @@ class SeamCarving:
         # 每个通道分别计算
         for i in range(0, image_rgb.shape[2]):
             ans += cls.__helper_energy_gray(image_rgb[:, :, i])
+        # 补个边
+        ans[0, :] = 1
+        ans[-1, :] = 1
+        ans[:, 0] = 1
+        ans[:, -1] = 1
         return ans
 
     @classmethod
     def __helper_energy_gray(cls, image_gray):
         # 由于找不到imfilter，只能使用prewitt这个比较像的东西了
         energy_gray = np.abs(skimage.filters.prewitt(image_gray))
-        # 补个边
-        energy_gray[0, :] = 1
-        energy_gray[-1, :] = 1
-        energy_gray[:, 0] = 1
-        energy_gray[:, -1] = 1
         return energy_gray
 
     @classmethod
@@ -68,10 +70,16 @@ class SeamCarving:
         # 将(0,1,2)转变为(-1,0,1)
         map_sum -= 1
         # 找到最小值所在地
-        map_sum_sort = map_sum[-1, :].argsort()
+        map_sum_last = map_sum[-1, :]
+        map_sum_sort = map_sum_last.argsort()
 
         map_trace[:, 0] = np.max(map_trace[:, 0], 0)
         map_trace[:, -1] = np.min(map_trace[:, -1], 0)
+
+        if not isinstance(ith, int):
+            total_min = np.sum(map_sum_last == map_sum_last.min())
+            ith = random.randint(0, total_min)
+
         # 找到路径
         route = cls.__helper_find_route(map_trace, map_sum_sort[ith])
         return route
@@ -150,9 +158,9 @@ class SeamCarving:
         for one_batch in batches:
             for i in range(one_batch):
                 if is_decrease:
-                    carving_route = cls.__helper_find_carving_route(image, 1)
+                    carving_route = cls.__helper_find_carving_route(image, 'random')
                 else:
-                    carving_route = cls.__helper_find_carving_route(image, i * 2 - 1)
+                    carving_route = cls.__helper_find_carving_route(image, (i - 1) * 2)
                 image = cls.__helper_do_carving(image, carving_route, is_decrease)
         return image
 
