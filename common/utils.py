@@ -68,7 +68,7 @@ def input_width_and_height(environment, now_height, now_width):
             shape_w_h[ith] = t
         else:
             break
-    return shape_w_h[0], shape_w_h[1], ok
+    return max(shape_w_h[0], 1), max(shape_w_h[1], 1), ok
 
 
 def underline_to_camel(underline_format):
